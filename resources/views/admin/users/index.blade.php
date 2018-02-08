@@ -4,6 +4,14 @@
     <div class="table-wrapper">
         <div class="table-title">
             <div class="row">
+                @include('admin.users.error')
+                @if (session()->has('success'))
+                <div class="alert alert-success">
+                    <ul>
+                        <li>{{ session()->get('success') }}</li>
+                    </ul>
+                </div>
+                @endif
                 <div class="col-sm-6">
                     <h2>Manage <b>Employees</b></h2>
                 </div>
@@ -20,12 +28,16 @@
         <table class="table table-striped table-hover">
             <thead>
             <tr class="filter">
-                <th></th>
-                <th><input type="text" class="form-control" placeholder="Name"></th>
-                <th><input type="text" class="form-control" placeholder="Email"></th>
-                <th><input type="text" class="form-control" placeholder="Address"></th>
-                <th><input type="date" class="form-control" placeholder="Birthday"></th>
+                <form action="{{route('users.index')}}" method="GET">
+                    <th></th>
+                    <th><input type="text" name="name" class="form-control" placeholder="Name"></th>
+                    <th><input type="text" name="email" class="form-control" placeholder="Email"></th>
+                    <th><input type="text" name="address" class="form-control" placeholder="Address"></th>
+                    <th><input type="date" name="birthday" class="form-control" placeholder="Birthday"></th>
+                    <th><input type="submit" class="btn btn-info" value="Search"></th>
+                </form>
             </tr>
+
             <tr class="">
                 <th>
 							<span class="custom-checkbox">
@@ -52,26 +64,21 @@
                     <td>{{$user->name}}</td>
                     <td>{{$user->email}}</td>
                     <td>{{$user->address}}</td>
-                    <td>{{$user->birthday}}</td>
+                    <td>{{(new Carbon\Carbon($user->birthday))->format('d/m/Y')}}</td>
                     <td>
-                        <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                        <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                        <a href="{{route('users.edit',$user->id)}}" class="btn btn-sm btn-success">Edit</a>
+                        <form action="{{url('users', [$user->id])}}" method="POST" class="inline">
+                            {{ method_field('DELETE') }}
+                            {{ csrf_field() }}
+                            <button type="submit" class="btn btn-danger btn-sm">Delete
+                            </button>
+                        </form>
                     </td>
                 </tr>
             @endforeach
             </tbody>
         </table>
         <div class="clearfix">
-            <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
-            <ul class="pagination">
-                <li class="page-item disabled"><a href="#">Previous</a></li>
-                <li class="page-item"><a href="#" class="page-link">1</a></li>
-                <li class="page-item"><a href="#" class="page-link">2</a></li>
-                <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                <li class="page-item"><a href="#" class="page-link">4</a></li>
-                <li class="page-item"><a href="#" class="page-link">5</a></li>
-                <li class="page-item"><a href="#" class="page-link">Next</a></li>
-            </ul>
         </div>
     </div>
     <!-- Edit Modal HTML -->
@@ -146,7 +153,8 @@
         </div>
     </div>
     <!-- Delete Modal HTML -->
-    <div id="deleteEmployeeModal" class="modal fade">
+    <form action="" method="DELETE" class="remove-user-model">
+        <div id="deleteEmployeeModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form>
@@ -166,6 +174,7 @@
             </div>
         </div>
     </div>
+    </form>
 </section>
 @endsection
 
