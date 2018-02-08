@@ -30,10 +30,10 @@
             <tr class="filter">
                 <form action="{{route('users.index')}}" method="GET">
                     <th></th>
-                    <th><input type="text" name="name" class="form-control" placeholder="Name"></th>
-                    <th><input type="text" name="email" class="form-control" placeholder="Email"></th>
-                    <th><input type="text" name="address" class="form-control" placeholder="Address"></th>
-                    <th><input type="date" name="birthday" class="form-control" placeholder="Birthday"></th>
+                    <th><input type="text" name="name" class="form-control" placeholder="Name" value="{{old('name')}}"></th>
+                    <th><input type="text" name="email" class="form-control" placeholder="Email" value="{{old('email')}}"></th>
+                    <th><input type="text" name="address" class="form-control" placeholder="Address" value="{{old('address')}}"></th>
+                    <th><input type="date" name="birthday" class="form-control" placeholder="Birthday" value="{{old('birthday')}}"></th>
                     <th><input type="submit" class="btn btn-info" value="Search"></th>
                 </form>
             </tr>

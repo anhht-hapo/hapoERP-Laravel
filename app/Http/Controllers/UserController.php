@@ -9,22 +9,11 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::all();
-        if (!empty($request->name)) {
-            $users = $users->where('name','LIKE',"%$request->name%");
-        }
-        if (!empty($request->email)) {
-            dd(2);
-            $users = $users->where('email', 'LIKE', "%$request->email%");
-        }
-        if (!empty($request->address)) {
-            dd(3);
-            $users = $users->where('address', 'LIKE', "%$request->address%");
-        }
-        if (!empty($request->birthday)) {
-            dd(4);
-            $users = $users->where('birthday', $request->birthday);
-        }
+        $users = User::where('name','LIKE',"%$request->name%")
+                    ->where('email', 'LIKE', "%$request->email%")
+                    ->where('address', 'LIKE', "%$request->address%")
+                    ->where('birthday', 'LIKE', "%$request->birthday%")
+                    ->get();
         $datas = [
             'users' => $users,
         ];
