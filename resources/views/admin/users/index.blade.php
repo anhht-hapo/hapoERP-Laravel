@@ -67,7 +67,7 @@
                     <td>{{(new Carbon\Carbon($user->birthday))->format('d/m/Y')}}</td>
                     <td>
                         <a href="{{route('users.edit',$user->id)}}" class="btn btn-sm btn-success">Edit</a>
-                        <form action="{{url('users', [$user->id])}}" method="POST" class="inline">
+                        <form action="{{route('users.destroy', $user->id)}}" method="POST">
                             {{ method_field('DELETE') }}
                             {{ csrf_field() }}
                             <button type="submit" class="btn btn-danger btn-sm">Delete
