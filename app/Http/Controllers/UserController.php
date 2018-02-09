@@ -89,7 +89,7 @@ class UserController extends Controller
         $user->updated_at = Carbon::now();
         $filePath = public_path('uploads/avatar/'.$user->avatar);
         if ($request->hasFile('avatar')) {
-            if (is_file($filePath))
+            if (is_file($filePath) && $user->avatar != "default.jpg")
             {
                 unlink($filePath);
             }
@@ -112,6 +112,11 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $message = "$user->name was deleted successfully";
+        $filePath = public_path('uploads/avatar/'.$user->avatar);
+        if (is_file($filePath) && $user->avatar != "default.jpg")
+        {
+            unlink($filePath);
+        }
         $user->delete();
         return redirect()->route('users.index')->with('success',$message);
     }
