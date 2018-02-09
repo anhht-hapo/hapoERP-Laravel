@@ -2,7 +2,9 @@ body {
 	font-family: 'Varela Round', sans-serif;
 	font-size: 13px;
 }
-
+.text-alert {
+	color: red;
+}
 .filter {
 	display: none;
 }

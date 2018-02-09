@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddUserRequest;
+use App\Http\Requests\EditUserRequest;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 
@@ -25,27 +27,25 @@ class UserController extends Controller
         return view('admin.users.create');
     }
 
-    public function store(Request $request)
+    public function store(AddUserRequest $request)
     {
-        $request->validate([
-            'name' => "required|min:6|regex:/^[A-z][A-z\s\.\']+$/",
-            'email' => 'required|email|unique:users',
-            'birthday' => 'required|date|before:now'
-
-        ]);
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->address= $request->address;
         $user->birthday= $request->birthday;
+        $avatarName = $request->file('avatar')->getClientOriginalName();
+        $avatarName = time().'_'.$avatarName;
+        $user->avatar = $avatarName;
+        $request->file('avatar')->move('uploads/avatar/',$avatarName);
         $user->save();
-        return redirect('users')->
+        return redirect()->route('users.index')->
         with(['success'=>'Successful registration!']);
     }
 
     public function show($id)
     {
-        $user = User::where('id',$id)->get();
+        $user = User::findOrFail($id);
         $datas = [
             'user' => $user,
         ];
@@ -59,7 +59,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $datas = [
             'user' => $user,
         ];
@@ -72,19 +72,16 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(EditUserRequest $request, $id)
     {
-        $request->validate([
-            'name' => "required|min:6|regex:/^[A-z][A-z\s\.\'] + $/",
-            'birthday' => 'required|date|before:now'
-        ]);
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->address= $request->address;
+        $user->email = $request->email;
         $user->birthday= $request->birthday;
         $user->save();
-        return redirect('users')
-            ->with('success','User updated successfully');
+        return redirect()->route('users.index')->
+        with('success','User updated successfully');
     }
     /**
      * Remove the specified resource from storage.
@@ -94,10 +91,9 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $message = "$user->name was deleted successfully";
         $user->delete();
-        return redirect('users')
-            ->with('success',$message);
+        return redirect()->route('users.index')->with('success',$message);
     }
 }
