@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddUserRequest;
 use App\Http\Requests\EditUserRequest;
+use Carbon\Carbon;
+use Faker\Provider\DateTime;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Http\File;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -15,7 +18,7 @@ class UserController extends Controller
                     ->where('email', 'LIKE', "%$request->email%")
                     ->where('address', 'LIKE', "%$request->address%")
                     ->where('birthday', 'LIKE', "%$request->birthday%")
-                    ->get();
+                    ->paginate(5);
         $datas = [
             'users' => $users,
         ];
@@ -34,10 +37,14 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->address= $request->address;
         $user->birthday= $request->birthday;
-        $avatarName = $request->file('avatar')->getClientOriginalName();
-        $avatarName = time().'_'.$avatarName;
-        $user->avatar = $avatarName;
-        $request->file('avatar')->move('uploads/avatar/',$avatarName);
+        if ($request->hasFile('avatar')) {
+            $avatarName = $request->file('avatar')->getClientOriginalName();
+            $avatarName = time().'_'.$avatarName;
+            $user->avatar = $avatarName;
+            $request->file('avatar')->move('uploads/avatar/',$avatarName);
+        } else {
+            $user->avatar = "default.jpg";
+        }
         $user->save();
         return redirect()->route('users.index')->
         with(['success'=>'Successful registration!']);
@@ -79,6 +86,18 @@ class UserController extends Controller
         $user->address= $request->address;
         $user->email = $request->email;
         $user->birthday= $request->birthday;
+        $user->updated_at = Carbon::now();
+        $filePath = public_path('uploads/avatar/'.$user->avatar);
+        if ($request->hasFile('avatar')) {
+            if (is_file($filePath))
+            {
+                unlink($filePath);
+            }
+            $avatarName = $request->file('avatar')->getClientOriginalName();
+            $avatarName = time().'_'.$avatarName;
+            $user->avatar = $avatarName;
+            $request->file('avatar')->move('uploads/avatar/',$avatarName);
+        }
         $user->save();
         return redirect()->route('users.index')->
         with('success','User updated successfully');
