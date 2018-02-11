@@ -14,11 +14,11 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::where('name','LIKE',"%$request->name%")
-                    ->where('email', 'LIKE', "%$request->email%")
-                    ->where('address', 'LIKE', "%$request->address%")
-                    ->where('birthday', 'LIKE', "%$request->birthday%")
-                    ->paginate(5);
+        $users = User::where('name', 'LIKE', "%$request->name%")
+            ->where('email', 'LIKE', "%$request->email%")
+            ->where('address', 'LIKE', "%$request->address%")
+            ->where('birthday', 'LIKE', "%$request->birthday%")
+            ->paginate(8);
         $datas = [
             'users' => $users,
         ];
@@ -119,5 +119,14 @@ class UserController extends Controller
         }
         $user->delete();
         return redirect()->route('users.index')->with('success',$message);
+    }
+
+    public function ajaxPaginate()
+    {
+        $users = User::paginate(5);
+        $datas = [
+            'users' => $users,
+        ];
+        return view('admin.users.index',$datas)->render();
     }
 }
