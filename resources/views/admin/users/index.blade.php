@@ -16,7 +16,7 @@
                     <h2>Manage <b>Employees</b></h2>
                 </div>
                 <div class="col-sm-6">
-                    <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal">
+                    <a href="#addEmployeeModal" id="#addButton" class="btn btn-success" data-toggle="modal">
                         <i class="material-icons">&#xE147;</i> <span>Add New Employee</span></a>
                     <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal">
                         <i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
@@ -25,67 +25,15 @@
                 </div>
             </div>
         </div>
-        <table class="table table-striped table-hover">
-            <thead>
-            <tr class="filter">
-                <form action="{{route('users.index')}}" method="GET">
-                    <th></th>
-                    <th><input type="text" name="name" class="form-control" placeholder="Name" value="{{old('name')}}"></th>
-                    <th><input type="text" name="email" class="form-control" placeholder="Email" value="{{old('email')}}"></th>
-                    <th><input type="text" name="address" class="form-control" placeholder="Address" value="{{old('address')}}"></th>
-                    <th><input type="date" name="birthday" class="form-control" placeholder="Birthday" value="{{old('birthday')}}"></th>
-                    <th><input type="submit" class="btn btn-info" value="Search"></th>
-                </form>
-            </tr>
-
-            <tr class="">
-                <th>
-							<span class="custom-checkbox">
-								<input type="checkbox" id="selectAll">
-								<label for="selectAll"></label>
-							</span>
-                </th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Address</th>
-                <th>Birthday</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($users as $user)
-                <tr>
-                    <td>
-                                <span class="custom-checkbox">
-                                    <input type="checkbox" id="checkbox5" name="options[]" value="1">
-                                    <label for="checkbox5"></label>
-                                </span>
-                    </td>
-                    <td>{{$user->name}}</td>
-                    <td>{{$user->email}}</td>
-                    <td>{{$user->address}}</td>
-                    <td>{{(new Carbon\Carbon($user->birthday))->format('d/m/Y')}}</td>
-                    <td>
-                        <a href="{{route('users.edit',$user->id)}}" class="btn btn-sm btn-success">Edit</a>
-                        <form action="{{url('users', [$user->id])}}" method="POST" class="inline">
-                            {{ method_field('DELETE') }}
-                            {{ csrf_field() }}
-                            <button type="submit" class="btn btn-danger btn-sm">Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
-        <div class="clearfix">
+        <div id="list_users">
+            @include('admin.users.list')
         </div>
     </div>
-    <!-- Edit Modal HTML -->
+    <!-- Add Modal HTML -->
     <div id="addEmployeeModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form method="POST" action="{{route('users.store')}}">
+                <form action="{{route('users.store')}}" method="POST">
                     {{ csrf_field() }}
                     <div class="modal-header">
                         <h4 class="modal-title">Add Employee</h4>
@@ -94,11 +42,11 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Name</label>
-                            <input type="text" name="name" class="form-control" required>
+                            <input type="text" class="form-control" name="name" required>
                         </div>
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" name="email" class="form-control" required>
+                            <input type="email" class="form-control" name="email" required>
                         </div>
                         <div class="form-group">
                             <label>Address</label>
@@ -106,16 +54,21 @@
                         </div>
                         <div class="form-group">
                             <label>Birthday</label>
-                            <input type="date"name="birthday" class="form-control" required>
+                            <input type="date" class="form-control" name="birthday" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Avatar</label>
+                            <input type="file" name="avatar" id="avatar">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" class="btn btn-success" value="Add">
+                        <input type="submit" class="btn btn-info add" value="Create">
                     </div>
                 </form>
             </div>
         </div>
+
     </div>
     <!-- Edit Modal HTML -->
     <div id="editEmployeeModal" class="modal fade">
@@ -129,19 +82,23 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Name</label>
-                            <input type="text" class="form-control" required>
+                            <input type="text" class="form-control" id="name"required>
                         </div>
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" class="form-control" required>
+                            <input type="email" class="form-control" id="email"required>
                         </div>
                         <div class="form-group">
                             <label>Address</label>
-                            <textarea class="form-control" required></textarea>
+                            <textarea class="form-control" id="address" required></textarea>
                         </div>
                         <div class="form-group">
-                            <label>Phone</label>
-                            <input type="text" class="form-control" required>
+                            <label>Birthday</label>
+                            <input type="date" class="form-control" id="birthday" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Avatar</label>
+                            <input type="file" id="avatar" required>
                         </div>
                     </div>
                     <div class="modal-footer">
