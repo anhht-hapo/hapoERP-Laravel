@@ -14,10 +14,10 @@ class UserController extends Controller
                     ->where('address', 'LIKE', "%$request->address%")
                     ->where('birthday', 'LIKE', "%$request->birthday%")
                     ->get();
-        $datas = [
+        $data = [
             'users' => $users,
         ];
-        return view('admin.users.index',$datas);
+        return view('admin.users.index',$data);
     }
 
     public function create()
@@ -46,10 +46,10 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::where('id',$id)->get();
-        $datas = [
+        $data = [
             'user' => $user,
         ];
-        return view('admin.users.index',$datas);
+        return view('admin.users.index',$data);
     }
     /**
      * Show the form for editing the specified resource.
@@ -60,10 +60,10 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
-        $datas = [
+        $data = [
             'user' => $user,
         ];
-        return view('admin.users.edit',$datas);
+        return view('admin.users.edit',$data);
     }
     /**
      * Update the specified resource in storage.
